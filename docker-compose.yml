@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  server:
+    env_file:
+        "./server/.env"
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+    image: "thanhnt/server-side"
+    ports:
+      - "5000:5000" 
+  client:
+    build: 
+      context: ./client
+      dockerfile: ./Dockerfile
+    image: "thanhnt/client-side"
+    ports:
+      - "3000:3000"
+    links:
+      - "server"
