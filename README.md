@@ -84,7 +84,10 @@ Result:
 + Your client app work fine at http://localhost:3000/
 
 3. Implement with docker and docker-compose:
--  First, We need create Dockerfile to create image and something else. Open new terminal and run:
+
+-  Fist, By default node server port is 3000. We will change it to port 5000 in server/bin/www.
+
+-  Second, We need create Dockerfile to create image and something else. Open new terminal and run:
 ```
 cd client
 touch Dockerfile
@@ -186,6 +189,99 @@ Open the server-container and you will see that the api called from port 5000 in
 ```docker rm [container_id]``` and ```docker rmi [image_name]```: delete container and image (Make sure your container is stopped before deleting).
 
 Use ```docker help``` to search other docker command lines
+
+Learn more at: https://docs.docker.com/engine/reference/commandline/cli/
+
+4/ Communicate application components
+- Test simple api generate from express with postman or thunder. Let's run server and try this api: 
+
+Result and log:
+![image](https://user-images.githubusercontent.com/48196420/143259937-22df359d-f3f4-4cf9-9a55-a7a82774e9ff.png)
+
+![image](https://user-images.githubusercontent.com/48196420/143260037-2344358e-6afb-4406-b59e-a0b4399d852a.png)
+
+- Stop all containers and make some changes to the communication between client and server.
+
+Install some package
++ Nodemon: Update the change of nodejs source code. We won't need to re-run the server every time we change the code. In script section at /server/package.json. Modify start script to ```"start": "nodemon --watch routes ./bin/www"```. Try modify api get user and look at your terminal ^^.
+
++ Cors: Very important if you want call api and get response from server.
+
++ Dotenv: You will need it to read environment variables. Example : ```NAME=abc``` and you can get value by: ```var a = process.env.NAME //abc```
+
++ Proxy: for development env to mapping port client and server
+
+Run command:
+
+```
+cd server
+npm i nodemon
+npm i cors
+npm i dotenv
+```
+Open app.js and add:
+```
+var cors = require('cors');
+app.use(cors());
+```
+
++ Docker-compose: We will make the FE and BE components communicate with each other through the docker-compose initialization script. We've made some changes to FE and BE. You can download the complete repo here: https://github.com/ThanhDeveloper/NodeDocker. To track changes and apply to your project: https://github.com/ThanhDeveloper/NodeDocker/pull/1. Please ```npm install``` at client and server.
+
+Open package.json of client folder. You can change to http://server:5000 for running on container and http://localhost:5000 for running out side container.
+
+Open project and look at docker-compose.yml. Docker compose is a tool used to define and run multi-containers for Docker applications. With compose you use the YAML file to configure the services for your application. Let's learn the commands inside: 
+```
+version: '3'
+
+services:
+  server:
+    env_file:
+        "./server/.env"
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+    image: "thanhnt/server-side"
+    ports:
+      - "5000:5000" 
+  client:
+    build: 
+      context: ./client
+      dockerfile: ./Dockerfile
+    image: "thanhnt/client-side"
+    ports:
+      - "3000:3000"
+    links:
+      - "server"
+```
+
+We will build 2 image with name thanhnt/server-side and thanhnt/client-side and specify the directory containing the Dockerfile to build the your application. We will specify client port as 3000, server port as 5000 and show client dependency by linking to server service.
+
++ We will add .env file to setting global env variables. We will use it to set my database login credentials:
+
+```
+cd server
+touch .env
+```
+Modify env like this:
+```
+PGUSER=node_user
+PGHOST=103.82.20.100
+PGDATABASE=test
+PGPASSWORD=node_user
+PGPORT=5432
+```
+
+![image](https://user-images.githubusercontent.com/48196420/143269144-aa031acd-405e-459e-8bed-54c58c48a6cd.png)
+
++ Run docker-compose:
+```
+docker-compose up -d 
+```
+
+
+
+
+
 
 
 
