@@ -264,19 +264,47 @@ touch .env
 ```
 Modify env like this:
 ```
-PGUSER=node_user
-PGHOST=103.82.20.100
-PGDATABASE=test
-PGPASSWORD=node_user
-PGPORT=5432
+PGUSER=[pg_user]
+PGHOST=[pg_host]
+PGDATABASE=[pg_db]
+PGPASSWORD=[pg_pwd]
+PGPORT=[pg_port]
 ```
 
-![image](https://user-images.githubusercontent.com/48196420/143269144-aa031acd-405e-459e-8bed-54c58c48a6cd.png)
+![image](https://user-images.githubusercontent.com/48196420/143367529-15aba87f-6944-41a7-9a56-c51a6afe73f1.png)
+
+Create a database with a table named d_users:
+
+```
+CREATE TABLE IF NOT EXISTS public.d_users
+(
+    id SERIAL,
+    name text,
+    age integer,
+    CONSTRAINT d_users_pkey PRIMARY KEY (id)
+);
+
+insert into d_users(name, age) values('MetaMask', 20);
+insert into d_users(name, age) values('Kardia', 19);
+
+select * from d_users;
+```
+
+![image](https://user-images.githubusercontent.com/48196420/143366806-a8b00e72-aee7-4746-9a91-4f33349e9ff7.png)
+
 
 + Run docker-compose:
 ```
 docker-compose up -d 
 ```
+Result:
+![image](https://user-images.githubusercontent.com/48196420/143365917-76827df4-c13d-48f6-beb4-7f0bc67a2716.png)
+![image](https://user-images.githubusercontent.com/48196420/143366078-f1085358-7cc9-405c-9f01-0bf86d013e76.png)
+
+You can see the containers that have been grouped. Try opening http://localhost:3000/ and check the results:
+![image](https://user-images.githubusercontent.com/48196420/143368018-643abefd-2347-4466-b98f-a1b15658222f.png)
+
+Congratulations, you have successfully implemented dockerize 1 basic application. In the next section we will continue with integrate unit test with cicd and deployment to aws or azure. Thanks for your follow and see you later
 
 
 
