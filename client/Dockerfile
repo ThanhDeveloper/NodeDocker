@@ -1,14 +1,12 @@
 
-FROM node:12.18.3
+FROM node:16.13.2
 
 WORKDIR /app
 
-COPY ["package.json", "package-lock.json", "./"]
+COPY ["package.json", "./"]
 
 RUN npm install --production
 
 COPY . .
-
-EXPOSE 3000
 
 CMD ["npm", "start"]

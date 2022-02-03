@@ -18,7 +18,6 @@ function User() {
 
     useEffect(() => {
         axios.get('/users').then((response) => {
-            console.log(response);
             setUsers(response.data)
         }).catch(error => {
             console.error('Error', error);

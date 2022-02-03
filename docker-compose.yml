@@ -9,13 +9,24 @@ services:
       dockerfile: ./Dockerfile
     image: "thanhnt/server-side"
     ports:
-      - "5000:5000" 
+      - "1357:5000" 
   client:
     build: 
       context: ./client
       dockerfile: ./Dockerfile
     image: "thanhnt/client-side"
     ports:
-      - "3000:3000"
+      - "2468:3000"
     links:
       - "server"
+  postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    ports:
+        - "6996:5432"
+    environment:
+        - POSTGRES_PASSWORD=dockeradmin
+    volumes:
+        - ./postgresql/data:/var/lib/postgresql14/data
+        # copy the sql script to create tables
+        - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
